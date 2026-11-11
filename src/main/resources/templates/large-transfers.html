@@ -88,13 +88,12 @@
                         <th>To Account</th>
                         <th class="num">Amount (LKR)</th>
                         <th>Status</th>
-                        <th>Description</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr th:if="${#lists.isEmpty(transfers)}">
-                        <td colspan="7" class="empty">
+                        <td colspan="6" class="empty">
                             No successful transfers found above
                             LKR
                             <span th:text="${#numbers.formatDecimal(min, 1, 'COMMA', 2, 'POINT')}">
@@ -106,8 +105,8 @@
                     <tr th:each="t : ${transfers}">
                         <td th:text="${t.id}">1</td>
 
-                        <td th:text="${t.createdAt != null
-                            ? #temporals.format(t.createdAt, 'yyyy-MM-dd HH:mm:ss')
+                        <td th:text="${t.timestamp != null
+                            ? #temporals.format(t.timestamp, 'yyyy-MM-dd HH:mm:ss')
                             : '-'}">
                             2026-10-24 10:30:00
                         </td>
@@ -135,11 +134,6 @@
                                 th:text="${t.status}">
                                 SUCCESS
                             </span>
-                        </td>
-
-                        <td th:text="${t.description != null
-                            ? t.description : '-'}">
-                            Transfer completed
                         </td>
                     </tr>
                 </tbody>
