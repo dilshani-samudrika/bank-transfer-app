@@ -1,14 +1,17 @@
 package com.example.bankapp.service;
 
-//import com.example.bankapp.model.BankTransaction;
-//import com.example.bankapp.model.TransactionStatus;
-//import com.example.bankapp.repository.BankTransactionRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Propagation;
-//import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-//import java.math.BigDecimal;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.bankapp.model.BankTransaction;
+import com.example.bankapp.model.TransactionStatus;
+import com.example.bankapp.repository.BankTransactionRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Saves a FAILED record after a transfer was rolled back.
@@ -18,5 +21,23 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TransactionAuditService {
-//
+
+    private final BankTransactionRepository transactionRepository;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public BankTransaction recordFailedTransaction(
+            String fromAccount,
+            String toAccount,
+            BigDecimal amount) {
+
+        BankTransaction transaction = new BankTransaction();
+
+        transaction.setFromAccount(fromAccount);
+        transaction.setToAccount(toAccount);
+        transaction.setAmount(amount);
+        transaction.setStatus(TransactionStatus.FAILED);
+        transaction.setTimestamp(LocalDateTime.now());
+
+        return transactionRepository.save(transaction);
+    }
 }
